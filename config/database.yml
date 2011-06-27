@@ -18,8 +18,5 @@ test:
   username: postgres
 
 production:
-  adapter: sqlite3
-  database: foursquare_push_prod
-  pool: 5
-  timeout: 5000
-  username: postgres
+  adapter: postgresql
+  database: postgres://ituwjrmvco:EVf1cbJq5hXkW7cCGmuV@ec2-50-19-226-176.compute-1.amazonaws.com/ituwjrmvco
