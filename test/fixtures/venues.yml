@@ -1,0 +1,7 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  foursquare_venue_id: MyString
+
+two:
+  foursquare_venue_id: MyString

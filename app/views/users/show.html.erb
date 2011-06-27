@@ -1,0 +1,20 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Foursquare user:</b>
+  <%= @user.id %>
+</p>
+
+<p>
+  <b>Foursquare firstname:</b>
+  <%= @user.firstname %>
+</p>
+
+<p>
+  <b>Foursquare lastname:</b>
+  <%= @user.lastname %>
+</p>
+
+
+<%= link_to 'Edit', edit_user_path(@user) %> |
+<%= link_to 'Back', users_path %>
