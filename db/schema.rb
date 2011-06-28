@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110627225438) do
+ActiveRecord::Schema.define(:version => 20110628203855) do
 
   create_table "checkins", :force => true do |t|
     t.string   "venue_id"
@@ -25,6 +25,9 @@ ActiveRecord::Schema.define(:version => 20110627225438) do
     t.string   "lastname"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "uid"
+    t.string   "provider"
+    t.string   "name"
   end
 
   create_table "venues", :force => true do |t|
