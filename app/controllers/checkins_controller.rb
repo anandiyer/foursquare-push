@@ -52,11 +52,11 @@ class CheckinsController < ApplicationController
       p posted_json
     end
     
-#    parsed_json = JSON.parse(posted_json.to_s)
+#    parsed_json = JSON.parse(posted_json)
 #    p parsed_json
 
     @checkin = Checkin.new()
-    @checkin.checkin_id = params[:checkin][:id]
+#    @checkin.checkin_id = params[:checkin][:id]
     @checkin.venue_id = params[:checkin][:venue][:id]
     @checkin.user_id = params[:user][:id]
 
