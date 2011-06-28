@@ -44,7 +44,17 @@ class CheckinsController < ApplicationController
   # POST /checkins.xml
   def create
     
+    posted_json = request.body.read
+
     p "HERE!"
+    
+    if !posted_json.blank?
+      p posted_json
+    end
+    
+#    parsed_json = JSON.parse(posted_json.to_s)
+#    p parsed_json
+
     @checkin = Checkin.new()
     @checkin.checkin_id = params[:checkin][:id]
     @checkin.venue_id = params[:checkin][:venue][:id]
