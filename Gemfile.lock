@@ -130,5 +130,5 @@ PLATFORMS
 DEPENDENCIES
   omniauth
   pg
-  rails (= 3.0.9)
+  rails
   rake (= 0.8.7)

@@ -57,9 +57,16 @@ class CheckinsController < ApplicationController
 
     @checkin = Checkin.new()
     @checkin.data = posted_json
-    #@checkin.checkin_id = params[:checkin][:id]
-    #@checkin.venue_id = params[:checkin][:venue][:id]
-    #@checkin.user_id = params[:user][:id]
+    
+    if (params[:checkin])
+      @checkin.checkin_id = params[:checkin][:id]
+      if (params[:checkin][:venue])
+        @checkin.venue_id = params[:checkin][:venue][:id]
+      end
+    end
+    if (params[:user])
+      @checkin.user_id = params[:user][:id]
+    end
 
     respond_to do |format|
       if @checkin.save
