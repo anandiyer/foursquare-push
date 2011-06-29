@@ -45,27 +45,29 @@ class CheckinsController < ApplicationController
   def create
     
     posted_json = request.body.read
-
+    content_type = request.headers["Content-Type"]
+    
     p "HERE!"
     
     if !posted_json.blank?
       p posted_json
+      p content_type
     end
     
-#    parsed_json = JSON.parse(posted_json)
-#    p parsed_json
-
+    pj = JSON.parse(posted_json)
+    p pj
+    
     @checkin = Checkin.new()
     @checkin.data = posted_json
     
-    if (params[:checkin])
-      @checkin.checkin_id = params[:checkin][:id]
-      if (params[:checkin][:venue])
-        @checkin.venue_id = params[:checkin][:venue][:id]
+    if (pj["checkin"])
+      @checkin.checkin_id = pj["checkin"]["id"]
+      if (pj["checkin"]["venue"])
+        @checkin.venue_id = pj["checkin"]["venue"]["id"]
       end
     end
-    if (params[:user])
-      @checkin.user_id = params[:user][:id]
+    if (pj["user"])
+      @checkin.user_id = pj["user"]["id"]
     end
 
     respond_to do |format|
