@@ -1,3 +1,7 @@
+require 'net/http'
+require 'twiliolib'
+
+
 class CheckinsController < ApplicationController
   # GET /checkins
   # GET /checkins.xml
@@ -47,13 +51,6 @@ class CheckinsController < ApplicationController
     posted_json = request.body.read
     content_type = request.headers["Content-Type"]
     
-    p "HERE!"
-    
-    if !posted_json.blank?
-      p posted_json
-      p content_type
-    end
-    
     pj = JSON.parse(posted_json)
     p pj
     
@@ -69,6 +66,36 @@ class CheckinsController < ApplicationController
     if (pj["user"])
       @checkin.user_id = pj["user"]["id"]
     end
+    
+    # Get the top item at this foursquare venue
+    @url = URI.parse('http://getcrave.com/items/food_by_foursquare_venue.json?foursquare_venue_id=' + @checkin.venue_id)
+    p "path = " + @url.path
+    p "uri = " + @url.request_uri
+    req = Net::HTTP::Get.new(@url.request_uri) 
+    res = Net::HTTP.start(@url.host, 80) {|http|http.request(req)} 
+        
+    # result = NET::HTTP.get(@url)
+    rs = JSON.parse(res.body)
+    p rs
+    
+    @body = "While you're at " + rs["menu_item"]["restaurant"]["name"] + " try the " + rs["menu_item"]["name"] +
+      ". " + "http://getcrave.com/items/id/" + rs["menu_item"]["id"].to_s
+    
+    # SMS
+    # Create a Twilio REST account object using your Twilio account ID and token
+    account = Twilio::RestAccount.new(ACCOUNT_SID, ACCOUNT_TOKEN)
+    
+    t = {
+        'From' => CALLER_ID,
+        'To'   => '+14154307975',
+        'Body' => @body
+    }
+    resp = account.request("/#{API_VERSION}/Accounts/#{ACCOUNT_SID}/SMS/Messages",
+          "POST", t)
+          
+    p "response"
+    p resp.code
+    p resp.body
 
     respond_to do |format|
       if @checkin.save
