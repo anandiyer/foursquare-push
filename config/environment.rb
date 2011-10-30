@@ -1,12 +1,12 @@
 # Load the rails application
 require File.expand_path('../application', __FILE__)
 
-# Initialize the rails application
-FoursquarePush::Application.initialize!
-
 FS_CONFIG = YAML.load_file("#{RAILS_ROOT}/config/foursquare.yml")[RAILS_ENV]
 FS_APP_ID = FS_CONFIG['app_id']
 FS_APP_SECRET = FS_CONFIG['app_secret']
+
+# Initialize the rails application
+FoursquarePush::Application.initialize!
 
 # your Twilio authentication credentials
 ACCOUNT_SID = "AC63aa7b49d6276f5af9470212f0d79cc7"
