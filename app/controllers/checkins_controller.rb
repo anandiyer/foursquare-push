@@ -47,66 +47,55 @@ class CheckinsController < ApplicationController
   # POST /checkins
   # POST /checkins.xml
   def create
-    
-    posted_json = request.body.read
-    content_type = request.headers["Content-Type"]
-    
-    pj = JSON.parse(posted_json)
-    p pj
-    
     @checkin = Checkin.new()
-    @checkin.data = posted_json
     
-    if (pj["checkin"])
-      @checkin.checkin_id = pj["checkin"]["id"]
-      if (pj["checkin"]["venue"])
-        @checkin.venue_id = pj["checkin"]["venue"]["id"]
+    if (params["checkin"])
+      checkin_json = JSON.parse(params["checkin"])
+      
+      @checkin.checkin_id = checkin_json["id"]
+      if (checkin_json["venue"])
+        @checkin.venue_id = checkin_json["venue"]["id"]
       end
     end
-    if (pj["user"])
-      @checkin.user_id = pj["user"]["id"]
+    if (params["user"])
+      user_json = JSON.parse(params["user"])
+      @checkin.user_id = user_json["id"]
     end
     
-    # Get the top item at this foursquare venue
-    @url = URI.parse('http://getcrave.com/items/food_by_foursquare_venue.json?foursquare_venue_id=' + @checkin.venue_id)
-    p "path = " + @url.path
-    p "uri = " + @url.request_uri
-    req = Net::HTTP::Get.new(@url.request_uri) 
-    res = Net::HTTP.start(@url.host, 80) {|http|http.request(req)} 
-        
-    # result = NET::HTTP.get(@url)
-    rs = JSON.parse(res.body)
-    p rs
+    # DO SOMETHING
+    @foursquare_venue_id = @checkin.venue_id
+    @checkin.save
+      
+    @body = "Did you know Arkham City was rated A-MAZING by the crew at IGN? http://xbox360.ign.com/objects/055/055051.html"
     
-    @body = "While you're at " + rs["menu_item"]["restaurant"]["name"] + " try the " + rs["menu_item"]["name"] +
-      ". " + "http://getcrave.com/items/id/" + rs["menu_item"]["id"].to_s
-    
-    # SMS
-    # Create a Twilio REST account object using your Twilio account ID and token
-    account = Twilio::RestAccount.new(ACCOUNT_SID, ACCOUNT_TOKEN)
-    
-    t = {
-        'From' => CALLER_ID,
-        'To'   => '+14154307975',
-        'Body' => @body
-    }
-    resp = account.request("/#{API_VERSION}/Accounts/#{ACCOUNT_SID}/SMS/Messages",
-          "POST", t)
-          
-    p "response"
-    p resp.code
-    p resp.body
+    # Get the user we should be sending this to
+    @provider = "foursquare"
+    @uid = @checkin.user_id
+    @conditions = "provider = \'#{@provider}\' AND uid = \'#{@uid}\'"
+    @auth = Authorization.find(:first, :conditions => @conditions)
 
+    # If we have this user's phone number saved, send them a text
+    if @auth && @auth.user.telephone && @auth.user.get_foursquare_recommendations
+      @phone = @auth.user.telephone
+
+      # SMS
+      # Create a Twilio REST account object using your Twilio account ID and token
+      account = Twilio::RestAccount.new(ACCOUNT_SID, ACCOUNT_TOKEN)
+    
+      t = {
+            'From' => CALLER_ID,
+            'To'   => @phone,
+            'Body' => @body
+      }
+      resp = account.request("/#{API_VERSION}/Accounts/#{ACCOUNT_SID}/SMS/Messages",
+            "POST", t)
+          
+    end
+    
     respond_to do |format|
-      if @checkin.save
         format.html { redirect_to(@checkin, :notice => 'Checkin was successfully created.') }
         format.xml  { render :xml => @checkin, :status => :created, :location => @checkin }
         format.json  { render :json => @checkin, :status => :created, :location => @checkin }
-      else
-        format.html { render :action => "new" }
-        format.xml  { render :xml => @checkin.errors, :status => :unprocessable_entity }
-        format.json  { render :json => @checkin.errors, :status => :unprocessable_entity }
-      end
     end
   end
 
