@@ -4,6 +4,9 @@ require File.expand_path('../application', __FILE__)
 # Initialize the rails application
 FoursquarePush::Application.initialize!
 
+FS_CONFIG = YAML.load_file("#{RAILS_ROOT}/config/foursquare.yml")[RAILS_ENV]
+FS_APP_ID = FS_CONFIG['app_id']
+FS_APP_SECRET = FS_CONFIG['app_secret']
 
 # your Twilio authentication credentials
 ACCOUNT_SID = "AC63aa7b49d6276f5af9470212f0d79cc7"
@@ -14,7 +17,7 @@ API_VERSION = '2010-04-01'
 
 # Sandbox phone number
 # or outgoing Caller ID you have purchased through Twilio
-CALLER_ID = "+14155992671"
+CALLER_ID = "+14153478834"
 
 #CALLER_PIN only needed to send using sandbox number. Looks like 9999-9999
 CALLER_PIN = "8298-5096"
