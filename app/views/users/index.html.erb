@@ -2,9 +2,11 @@
 
 <table>
   <tr>
-    <th>Foursquare user</th>
-    <th>Foursquare firstname</th>
-    <th>Foursquare lastname</th>
+    <th>user</th>
+    <th>name</th>
+    <th>phone</th>
+    <th>uid</th>
+    <th>created at</th>
     <th></th>
     <th></th>
     <th></th>
@@ -13,8 +15,10 @@
 <% @users.each do |user| %>
   <tr>
     <td><%= user.id %></td>
-    <td><%= user.firstName %></td>
-    <td><%= user.lastName %></td>
+    <td><%= user.name %></td>
+    <td><%= user.phone %></td>
+    <td><%= user.uid %></td>
+    <td><%= user.created_at %></td>
     <td><%= link_to 'Show', user %></td>
     <td><%= link_to 'Edit', edit_user_path(user) %></td>
     <td><%= link_to 'Destroy', user, :confirm => 'Are you sure?', :method => :delete %></td>
