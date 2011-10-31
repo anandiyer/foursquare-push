@@ -72,11 +72,13 @@ class CheckinsController < ApplicationController
     @provider = "foursquare"
     @uid = @checkin.user_id
     @conditions = "provider = \'#{@provider}\' AND uid = \'#{@uid}\'"
-    @auth = User.find(:first, :conditions => @conditions)
+    @user = User.find(:first, :conditions => @conditions)
+    
+    p @user
 
     # If we have this user's phone number saved, send them a text
-    if @auth && @auth.user.phone
-      @phone = @auth.user.phone
+    if @user && @user.phone
+      @phone = @user.phone
 
       # SMS
       # Create a Twilio REST account object using your Twilio account ID and token
